@@ -1,5 +1,5 @@
 #!nix
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   # https://devenv.sh/packages/
   packages = [
@@ -8,6 +8,7 @@
       ps.pandas
       ps.dateutil
       ps.pytz
+      ps.torch
     ]))
   ];
 
@@ -20,4 +21,6 @@
   '';
 
   pre-commit.hooks.black.enable = true;
+
+  env.DATASET_DIR = "${config.env.DEVENV_ROOT}/datasets";
 }

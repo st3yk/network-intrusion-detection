@@ -1,5 +1,4 @@
 #!/bin/env python3
-# from dl_project.datahandler import DataHandler
 import numpy as np
 from torch.utils.data import DataLoader
 from dl_project.PacketDataset import PacketDataset

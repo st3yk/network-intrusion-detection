@@ -1,19 +1,8 @@
 import numpy as np
-import torch as t
-import PacketDataset
-import os
 import matplotlib.pyplot as plt
 
 
-#dataset_dir = os.environ["DATASET_DIR"]
-# training_set = PacketDataset.PacketDataset(f"{dataset_dir}/UNSW_NB15_training.csv")
-
-# batch_size = 4
-
-# trainloader = t.utils.data.DataLoader(
-#     training_set, batch_size=batch_size, shuffle=True, num_workers=2
-# )
-class DataHandler:
+class DataStatistics:
     def __init__(self, path: str, rowCount: int = -1) -> None:
         self._data = np.genfromtxt(
             path,

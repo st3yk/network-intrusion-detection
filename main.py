@@ -1,5 +1,4 @@
 #!/bin/env python3
-from dl_project.datahandler import DataHandler
 import numpy as np
 
 if __name__ == "__main__":

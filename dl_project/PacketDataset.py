@@ -19,3 +19,11 @@ class PacketDataset(t.utils.data.Dataset):
         print(value)
         print(attack_category)
         return value.to_numpy(), attack_category
+
+    def generate_string_to_label_dict(self):
+        use_cols = ["proto", "state", "service"]
+        data = pd.read_csv(self.data_file, usecols=use_cols)
+        labels = set(data[0] + data[1] + data[2])
+        label_map = dict(zip(labels, [i for i in range(len(labels))]))
+
+        return label_map

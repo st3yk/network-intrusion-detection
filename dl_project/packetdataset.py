@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import torch as t
 
@@ -8,6 +7,7 @@ class PacketDataset(t.utils.data.Dataset):
         self.data_file = data_file
         self.data = pd.read_csv(data_file)
         self.labels = self.data["label"]
+        self.string_to_label_dict = self._generate_string_to_label_dict()
 
     def __len__(self):
         return len(self.labels)
@@ -16,14 +16,19 @@ class PacketDataset(t.utils.data.Dataset):
         data = self.data
         value = data.iloc[idx, :-2]
         attack_category = data["attack_cat"][idx]
-        print(value)
-        print(attack_category)
+        value = value.map(
+            lambda x: x
+            if x not in self.string_to_label_dict
+            else self.string_to_label_dict[x]
+        )
         return value.to_numpy(), attack_category
 
-    def generate_string_to_label_dict(self):
+    def _generate_string_to_label_dict(self):
         use_cols = ["proto", "state", "service"]
         data = pd.read_csv(self.data_file, usecols=use_cols)
-        labels = set(data[0] + data[1] + data[2])
-        label_map = dict(zip(labels, [i for i in range(len(labels))]))
-
-        return label_map
+        labels = set(
+            data.loc[:, "proto"].values.tolist()
+            + data.loc[:, "state"].values.tolist()
+            + data.loc[:, "service"].values.tolist()
+        )
+        return dict(zip(labels, [i for i in range(len(labels))]))

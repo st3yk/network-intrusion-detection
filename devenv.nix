@@ -9,6 +9,7 @@
       ps.dateutil
       ps.pytz
       ps.torch
+      ps.matplotlib
     ]))
   ];
 

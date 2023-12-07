@@ -8,5 +8,5 @@ if __name__ == "__main__":
     training_data = PacketDataset("datasets/UNSW_NB15_training.csv")
     testing_data = PacketDataset("datasets/UNSW_NB15_testing.csv")
 
-    train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
-    test_dataloader = DataLoader(testing_data, batch_size=64, shuffle=True)
+    train_dataloader = DataLoader(training_data, batch_size=32)
+    test_dataloader = DataLoader(testing_data, batch_size=32)

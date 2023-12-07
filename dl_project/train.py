@@ -10,10 +10,10 @@ import os
 def train_network(input_dim, conv_out, kernel):
     path = os.environ["DATASET_DIR"]
     train_dataloader = DataLoader(
-        PacketDataset(f"{path}/UNSW_NB15_training.csv"), batch_size=32, num_workers=7
+        PacketDataset(f"{path}/UNSW_NB15_training.csv"), batch_size=1, num_workers=7
     )
     test_dataloader = DataLoader(
-        PacketDataset(f"{path}/UNSW_NB15_testing.csv"), batch_size=32, num_workers=7
+        PacketDataset(f"{path}/UNSW_NB15_testing.csv"), batch_size=1, num_workers=7
     )
     hparams = Namespace(
         **{"input_dim": input_dim, "conv_out": conv_out, "kernel": kernel}

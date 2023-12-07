@@ -25,13 +25,28 @@ class BhmthNet(LightningModule):
         self.dropout = nn.Dropout(p=0.5)
         self.avg_pool = nn.AvgPool1d(kernel_size=hparams.conv_out)
 
+        self.categories_dict = {
+            "Normal": 0.0,
+            "Fuzzers": 0.1,
+            "Analysis": 0.2,
+            "Backdoors": 0.3,
+            "DoS": 0.4,
+            "Exploits": 0.5,
+            "Generic": 0.6,
+            "Reconnaissance": 0.7,
+            "Shellcode": 0.8,
+            "Worms": 0.9,
+        }
+
     def _get_input_size(self, input_dim, layer):
         temp_x = torch.randn(1, 1, input_dim, requires_grad=False)
         temp_x = self.conv(temp_x)
         temp_x = self.max_pool(temp_x)
         if layer == "batch_norm":
-            return temp_x.shape[1]
+            return temp_x.shape[2]
         elif layer == "lstm":
+            temp_x = self.batch_norm(temp_x)
+            # temp_x = F.relu(temp_x)
             return temp_x.shape[2]
 
     # Network layers
@@ -39,28 +54,31 @@ class BhmthNet(LightningModule):
         x = self.conv(x)
         x = self.max_pool(x)
         x = self.batch_norm(x)
-        x = self.relu(x)
+        x = F.relu(x)
         x, hidden = self.lstm(x)
         x = self.dropout(x)
         x = self.avg_pool(x)
         return x
 
     def training_step(self, batch, batch_index):
-        print(f"{batch}, size: {batch[0].size()}")
-        x = batch["feature"].float()
+        # print("--------------")
+        # print(f"batch: {batch}, size: {batch[0].size()}")
+        # print("--------------")
+        x = batch[0].float()
         y_hat = self(x)
-
-        y = batch["attack_cat"].long()
+        y = batch[1]
+        print(y.size())
+        print(y_hat.size())
         loss = {"loss": F.cross_entropy(y_hat, y)}
         if (batch_index % 50) == 0:
             self.logger.log_metrics(loss)
         return loss
 
     def validation_step(self, batch, batch_index):
-        x = batch["feature"].float()
+        x = batch[0].float()
         y_hat = self(x)
 
-        y = batch["attack_cat"].long()
+        y = batch[1].long()
         loss = {"val_loss": F.cross_entropy(y_hat, y)}
         if (batch_index % 50) == 0:
             self.logger.log_metrics(loss)

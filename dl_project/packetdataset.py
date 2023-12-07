@@ -1,5 +1,6 @@
 import pandas as pd
 import torch as t
+import numpy as np
 
 
 class PacketDataset(t.utils.data.Dataset):
@@ -21,7 +22,23 @@ class PacketDataset(t.utils.data.Dataset):
             if x not in self.string_to_label_dict
             else self.string_to_label_dict[x]
         )
-        return value.to_numpy(), attack_category
+        categories_dict = {
+            "Normal": 0.0,
+            "Fuzzers": 0.0,
+            "Analysis": 0.0,
+            "Backdoors": 0.0,
+            "DoS": 0.0,
+            "Exploits": 0.0,
+            "Generic": 0.0,
+            "Reconnaissance": 0.0,
+            "Shellcode": 0.0,
+            "Worms": 0.0,
+        }
+        categories_dict[attack_category] = 1.0
+        # categories = np.append(list(categories_dict.values()),[0,0,0,0,0,0,0,0])
+        categories = np.array(list(categories_dict.values()))
+        categories = categories.reshape((10, 1))
+        return value.to_numpy(), categories
 
     def _generate_string_to_label_dict(self):
         use_cols = ["proto", "state", "service"]

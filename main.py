@@ -1,12 +1,7 @@
 #!/bin/env python3
-import numpy as np
-from torch.utils.data import DataLoader
-from dl_project.packetdataset import PacketDataset
+from dl_project.train import train_network
+from pytorch_lightning.loggers import TensorBoardLogger
 
 if __name__ == "__main__":
-    # Prepare data
-    training_data = PacketDataset("datasets/UNSW_NB15_training.csv")
-    testing_data = PacketDataset("datasets/UNSW_NB15_testing.csv")
-
-    train_dataloader = DataLoader(training_data, batch_size=32)
-    test_dataloader = DataLoader(testing_data, batch_size=32)
+    logger = TensorBoardLogger("model_logs", "bhmth_model")
+    train_network(input_dim=196, conv_out=64, kernel=64)

@@ -23,22 +23,41 @@ class PacketDataset(t.utils.data.Dataset):
             else self.string_to_label_dict[x]
         )
         categories_dict = {
-            "Normal": 0.0,
-            "Fuzzers": 0.0,
-            "Analysis": 0.0,
-            "Backdoors": 0.0,
-            "DoS": 0.0,
-            "Exploits": 0.0,
-            "Generic": 0.0,
-            "Reconnaissance": 0.0,
-            "Shellcode": 0.0,
-            "Worms": 0.0,
+            "Normal": 0,
+            "Fuzzers": 0,
+            "Analysis": 0,
+            "Backdoors": 0,
+            "DoS": 0,
+            "Exploits": 0,
+            "Generic": 0,
+            "Reconnaissance": 0,
+            "Shellcode": 0,
+            "Worms": 0,
         }
-        categories_dict[attack_category] = 1.0
+        categories = [
+            "Normal",
+            "Fuzzers",
+            "Analysis",
+            "Backdoors",
+            "DoS",
+            "Exploits",
+            "Generic",
+            "Reconnaissance",
+            "Shellcode",
+            "Worms",
+        ]
+        # categories_dict[attack_category] = 1
+        # categories = list(categories_dict.values())+[0,0,0,0,0,0,0,0]
+        # categories = np.array(categories)
+        # categories = np.reshape(categories, (1,18))
+        category = categories.index(attack_category)
+        # category = np.array(list([category]))
+        # category = category.reshape(-1,1)
+        # print(category.size)
+        # print(categories)
         # categories = np.append(list(categories_dict.values()),[0,0,0,0,0,0,0,0])
-        categories = np.array(list(categories_dict.values()))
-        categories = categories.reshape((10, 1))
-        return value.to_numpy(), categories
+        # categories = np.array([[x] for x in list(categories_dict.values()) + [0,0,0,0,0,0,0,0]])
+        return value.to_numpy(), category
 
     def _generate_string_to_label_dict(self):
         use_cols = ["proto", "state", "service"]

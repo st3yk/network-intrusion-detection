@@ -61,14 +61,14 @@ class BhmthNet(LightningModule):
         return x
 
     def training_step(self, batch, batch_index):
-        # print("--------------")
-        # print(f"batch: {batch}, size: {batch[0].size()}")
-        # print("--------------")
         x = batch[0].float()
         y_hat = self(x)
         y = batch[1]
-        print(y.size())
+        y_hat = torch.transpose(y_hat, 0, 1)
+        print(y_hat)
         print(y_hat.size())
+        print(y)
+        print(y.size())
         loss = {"loss": F.cross_entropy(y_hat, y)}
         if (batch_index % 50) == 0:
             self.logger.log_metrics(loss)

@@ -10,6 +10,7 @@
       ps.pytz
       ps.torch
       ps.matplotlib
+      ps.pytorch-lightning
     ]))
   ];
 

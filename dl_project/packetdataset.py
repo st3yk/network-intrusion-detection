@@ -1,5 +1,19 @@
 import pandas as pd
 import torch as t
+import numpy as np
+
+ATTACK_CAT_TO_ID = {
+    "Normal": 0,
+    "Reconnaissance": 1,
+    "Backdoor": 2,
+    "DoS": 3,
+    "Exploits": 4,
+    "Analysis": 5,
+    "Fuzzers": 6,
+    "Worms": 7,
+    "Shellcode": 8,
+    "Generic": 9,
+}
 
 
 class PacketDataset(t.utils.data.Dataset):
@@ -14,14 +28,23 @@ class PacketDataset(t.utils.data.Dataset):
 
     def __getitem__(self, idx):
         data = self.data
-        value = data.iloc[idx, :-2]
-        attack_category = data["attack_cat"][idx]
-        value = value.map(
+        attack_category = (
+            data["attack_cat"]
+            .apply(func=(lambda x: ATTACK_CAT_TO_ID.get(x)))
+            .to_numpy()
+            .reshape(-1, 1)[idx]
+        )
+        feature = data.iloc[idx, :-2]
+        feature = feature.map(
             lambda x: x
             if x not in self.string_to_label_dict
             else self.string_to_label_dict[x]
         )
-        return value.to_numpy(), attack_category
+        feature = np.expand_dims(feature, axis=0)
+        return {
+            "feature": feature,
+            "attack_category": attack_category,
+        }
 
     def _generate_string_to_label_dict(self):
         use_cols = ["proto", "state", "service"]
